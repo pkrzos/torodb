@@ -88,7 +88,7 @@ public class DefaultExecutorFactory implements ExecutorFactory {
         return systemExecutor;
     }
 
-    static class DefaultExceptionHandler implements ExceptionHandler {
+    public static class DefaultExceptionHandler implements ExceptionHandler {
 
         @Override
         public <R> R catchSystemException(Throwable t, Callable<R> task) throws Exception {

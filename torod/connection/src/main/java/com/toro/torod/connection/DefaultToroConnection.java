@@ -20,6 +20,7 @@
 
 package com.toro.torod.connection;
 
+import com.torodb.DefaultExecutorServiceProvider;
 import com.torodb.torod.core.Session;
 import com.torodb.torod.core.config.DocumentBuilderFactory;
 import com.torodb.torod.core.connection.ToroConnection;
@@ -31,64 +32,68 @@ import com.torodb.torod.core.dbWrapper.exceptions.ImplementationDbException;
 import com.torodb.torod.core.executor.ExecutorFactory;
 import com.torodb.torod.core.executor.SessionExecutor;
 import com.torodb.torod.core.executor.SessionTransaction;
+import com.torodb.torod.db.executor.DefaultExecutorFactory;
+import com.torodb.torod.db.executor.DefaultSessionExecutor;
+import com.torodb.torod.db.executor.Monitor;
+import com.torodb.torod.db.postgresql.PostgresqlDbWrapper;
 
 /**
  *
  */
 class DefaultToroConnection implements ToroConnection {
 
-    private final Session session;
-    private final D2RTranslator d2r;
-    private final SessionExecutor executor;
-    private final CursorManagerFactory cursorManagerFactory;
-    private final DocumentBuilderFactory documentBuilderFactory;
-    private final DbMetaInformationCache cache;
+	private final Session session;
+	private final D2RTranslator d2r;
+	private final SessionExecutor executor;
+	private final CursorManagerFactory cursorManagerFactory;
+	private final DocumentBuilderFactory documentBuilderFactory;
+	private final DbMetaInformationCache cache;
 
-    DefaultToroConnection(
-            D2RTranslator d2RTranslator,
-            ExecutorFactory executorFactory,
-            CursorManagerFactory cursorManagerFactory,
-            DocumentBuilderFactory documentBuilderFactory,
-            DbMetaInformationCache cache) {
-        this.session = new DefaultSession();
-        this.d2r = d2RTranslator;
+	DefaultToroConnection(D2RTranslator d2RTranslator,
+			ExecutorFactory executorFactory,
+			CursorManagerFactory cursorManagerFactory,
+			DocumentBuilderFactory documentBuilderFactory,
+			DbMetaInformationCache cache) {
+		this.session = new DefaultSession();
+		this.d2r = d2RTranslator;
+//		this.executor = executorFactory.createSessionExecutor(session);
+		this.executor = new DefaultSessionExecutor(
+				new DefaultExecutorFactory.DefaultExceptionHandler(),
+				(DefaultExecutorFactory) executorFactory,
+				new PostgresqlDbWrapper(null),
+				new DefaultExecutorServiceProvider(null), new Monitor(0L, 0),
+				session);
+		this.cursorManagerFactory = cursorManagerFactory;
+		this.documentBuilderFactory = documentBuilderFactory;
+		this.cache = cache;
+	}
 
-        this.executor = executorFactory.createSessionExecutor(session);
-        this.cursorManagerFactory = cursorManagerFactory;
-        this.documentBuilderFactory = documentBuilderFactory;
-        this.cache = cache;
-    }
+	@Override
+	public Session getSession() {
+		return session;
+	}
 
-    @Override
-    public Session getSession() {
-        return session;
-    }
+	@Override
+	public boolean createCollection(String collection) {
+		if (cache.collectionExists(collection)) {
+			return false;
+		}
 
-    @Override
-    public boolean createCollection(String collection) {
-        if(cache.collectionExists(collection)) {
-            return false;
-        }
+		return cache.createCollection(executor, collection);
+	}
 
-        return cache.createCollection(executor, collection);
-    }
+	@Override
+	public void close() {
+		executor.close();
+	}
 
-    @Override
-    public void close() {
-        executor.close();
-    }
-
-    @Override
-    public ToroTransaction createTransaction() throws ImplementationDbException {
-        SessionTransaction sessionTransaction = executor.createTransaction();
-        return new DefaultToroTransaction(
-                session, 
-                sessionTransaction, 
-                d2r, 
-                executor, 
-                cursorManagerFactory.createCursorManager(sessionTransaction),
-                documentBuilderFactory
-        );
-    }
+	@Override
+	public ToroTransaction createTransaction() throws ImplementationDbException {
+		SessionTransaction sessionTransaction = executor.createTransaction();
+		return new DefaultToroTransaction(session, sessionTransaction, d2r,
+				executor,
+				cursorManagerFactory.createCursorManager(sessionTransaction),
+				documentBuilderFactory);
+	}
 
 }

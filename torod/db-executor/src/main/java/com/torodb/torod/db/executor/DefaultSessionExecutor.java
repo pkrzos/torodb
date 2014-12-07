@@ -32,7 +32,7 @@ import java.util.concurrent.Future;
 /**
  *
  */
-class DefaultSessionExecutor implements SessionExecutor {
+public class DefaultSessionExecutor implements SessionExecutor {
 
     private final DbWrapper wrapper;
     private final ExecutorService executorService;

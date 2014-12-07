@@ -13,8 +13,23 @@
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
+            <groupId>com.torodb</groupId>
+            <artifactId>torodb</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>torod-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>db-executor</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+          <dependency>
+            <groupId>com.torodb.torod.db-wrappers</groupId>
+            <artifactId>postgresql</artifactId>
             <version>${project.version}</version>
         </dependency>
         
