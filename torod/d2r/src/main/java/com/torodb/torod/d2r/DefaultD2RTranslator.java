@@ -20,6 +20,7 @@
 
 package com.torodb.torod.d2r;
 
+import com.toro.torod.connection.DefaultSession;
 import com.torodb.torod.core.subdocument.values.BooleanValue;
 import com.torodb.torod.core.subdocument.values.Value;
 import com.torodb.torod.core.subdocument.values.StringValue;
@@ -36,7 +37,9 @@ import com.torodb.torod.core.executor.SessionExecutor;
 import com.torodb.torod.core.subdocument.structure.DocStructure;
 import com.torodb.torod.core.subdocument.SplitDocument;
 import com.torodb.torod.core.subdocument.SubDocument;
+
 import javax.inject.Inject;
+
 import com.torodb.torod.core.subdocument.ToroDocument;
 import com.torodb.torod.core.subdocument.structure.ArrayStructure;
 import com.torodb.torod.core.subdocument.structure.StructureElement;
@@ -44,6 +47,7 @@ import com.torodb.torod.core.subdocument.values.*;
 import com.torodb.kvdocument.types.GenericType;
 import com.torodb.kvdocument.values.DocValue;
 import com.torodb.kvdocument.values.ObjectValue;
+
 import java.util.Map;
 
 /**
@@ -64,6 +68,7 @@ public class DefaultD2RTranslator implements D2RTranslator {
         this.cache = cache;
         this.splitter = new DocumentSplitter(cache);
         this.documentBuilderFactory = documentBuilderFactory;
+        new DefaultSession();
     }
 
     @Override

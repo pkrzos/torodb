@@ -20,7 +20,9 @@
 
 package com.toro.torod.connection;
 
+import com.torodb.di.ConfigModule;
 import com.torodb.torod.core.Session;
+
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -28,43 +30,44 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * <p>
  */
-class DefaultSession implements Session, Serializable {
+public class DefaultSession implements Session, Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private static final AtomicInteger idProvider = new AtomicInteger();
-    private final int id;
+	private static final AtomicInteger idProvider = new AtomicInteger();
+	private final int id;
 
-    DefaultSession() {
-        this.id = idProvider.incrementAndGet();
-    }
+	public DefaultSession() {
+		this.id = idProvider.incrementAndGet();
+		new ConfigModule(null);
+	}
 
-    @Override
-    public String toString() {
-        return "session-" + id;
-    }
+	@Override
+	public String toString() {
+		return "session-" + id;
+	}
 
-    @Override
-    public int hashCode() {
-//        int hash = 7;
-//        hash = 79 * hash + this.id;
-//        return hash;
-        return this.id;
-    }
+	@Override
+	public int hashCode() {
+		// int hash = 7;
+		// hash = 79 * hash + this.id;
+		// return hash;
+		return this.id;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DefaultSession other = (DefaultSession) obj;
-        if (this.id != other.id) {
-            return false;
-        }
-        return true;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final DefaultSession other = (DefaultSession) obj;
+		if (this.id != other.id) {
+			return false;
+		}
+		return true;
+	}
 
 }
