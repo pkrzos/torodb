@@ -18,6 +18,11 @@
             <artifactId>torod-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+         <dependency>
+            <groupId>com.torodb.torod.db-wrappers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
