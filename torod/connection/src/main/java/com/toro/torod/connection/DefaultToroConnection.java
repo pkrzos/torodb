@@ -35,7 +35,7 @@ import com.torodb.torod.core.executor.SessionTransaction;
 /**
  *
  */
-class DefaultToroConnection implements ToroConnection {
+public class DefaultToroConnection implements ToroConnection {
 
     private final Session session;
     private final D2RTranslator d2r;

@@ -31,6 +31,7 @@ import com.eightkdata.mongowp.mongoserver.protocol.MongoWP.ErrorCode;
 import com.eightkdata.nettybson.api.BSONDocument;
 import com.eightkdata.nettybson.mongodriver.MongoBSONDocument;
 import com.mongodb.WriteConcern;
+import com.toro.torod.connection.DefaultToroConnection;
 import com.torodb.mongowp.mongoserver.api.toro.util.BSONDocuments;
 import com.torodb.mongowp.mongoserver.api.toro.util.BSONToroDocument;
 import com.torodb.torod.core.WriteFailMode;
@@ -44,12 +45,15 @@ import com.torodb.torod.core.language.querycriteria.TrueQueryCriteria;
 import com.torodb.torod.core.language.update.UpdateAction;
 import com.torodb.torod.core.subdocument.ToroDocument;
 import com.torodb.translator.*;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.netty.util.AttributeMap;
+
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
 import javax.annotation.Nonnull;
+
 import java.util.*;
 import java.util.concurrent.Future;
 
@@ -65,7 +69,7 @@ public class ToroQueryCommandProcessor implements QueryCommandProcessor {
 	@SuppressFBWarnings("NP_LOAD_OF_KNOWN_NULL_VALUE")
 	public void count(BSONDocument document, MessageReplier messageReplier) throws Exception {
 		AttributeMap attributeMap = messageReplier.getAttributeMap();
-        ToroConnection connection = attributeMap.attr(ToroRequestProcessor.CONNECTION).get();
+        DefaultToroConnection connection = (DefaultToroConnection) attributeMap.attr(ToroRequestProcessor.CONNECTION).get();
 
 		Map<String, Object> keyValues = new HashMap<String, Object>();
         
